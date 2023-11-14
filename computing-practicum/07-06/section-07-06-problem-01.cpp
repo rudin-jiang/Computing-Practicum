@@ -1,4 +1,5 @@
 #include "integrate.hpp"
+#include "gauss-legendre.hpp"
 #include <cstdio>
 
 int main() {
@@ -23,6 +24,7 @@ int main() {
     std::printf("trap int: %15.10lf\n", trapInt);
     std::printf("simp int: %15.10lf\n", simpInt);
     std::printf("cote int: %15.10lf\n", coteInt);
+    std::printf("\n");
 
     std::printf("Problem 1.2\n");
     
@@ -39,6 +41,24 @@ int main() {
 
     std::printf("composite trap int: %15.10lf\n", comTrapIntM8);
     std::printf("composite simp int: %15.10lf\n", comSimpIntM8);
+    std::printf("\n");
+
+    std::printf("Problem 1.3\n");
+
+    double rombInt = romberg_integrate(func, a, b, 1.0e-8);
+    std::printf("romberg int: %15.10lf\n", rombInt);
+    std::printf("\n");
+
+    std::printf("Problem 1.4\n");
+
+    double glIntN1 = gauss_legendre_integrate_a_b_(func, a, b, 1);
+    double glIntN2 = gauss_legendre_integrate_a_b_(func, a, b, 2);
+    double glIntN4 = gauss_legendre_integrate_a_b_(func, a, b, 4);
+
+    std::printf("Gauss-Legendre n = 1 :  %15.10lf\n", glIntN1);
+    std::printf("Gauss-Legendre n = 2 :  %15.10lf\n", glIntN2);
+    std::printf("Gauss-Legendre n = 4 :  %15.10lf\n", glIntN4);
+
 
 
     return 0;

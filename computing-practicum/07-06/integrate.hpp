@@ -1,7 +1,9 @@
 #pragma once
 
 #include <cstddef>
+#include <stdexcept>
 #include <vector>
+#include <iostream>
 
 inline double trap_integrate(double fa, double fb, double a, double b) {
     return (fa + fb) * (b - a) / 2.0;
@@ -60,8 +62,35 @@ double composite_cote_integrate(const Fn &func, double a, double b, std::size_t 
 
 template<class Fn>
 double romberg_integrate(const Fn &func, double a, double b, double eps = 1.0e-8) {
-    // 
-    return 0.0;
+    if (eps < 0) throw std::runtime_error("");
+    
+    const std::size_t iterMax = 64;
+    double TM[iterMax][iterMax];
+
+    std::size_t n = 0;
+    std::size_t m = 1;
+
+    TM[0][0] = composite_trap_integrate(func, a, b, m);
+
+    while (n < iterMax) {
+        ++n;
+        m *= 2;
+        TM[n][0] = composite_trap_integrate(func, a, b, m);
+
+        std::size_t p4k = 1;
+        for (std::size_t i = 1; i <= n; ++i) {
+            p4k *= 4;
+            std::size_t row = n - i;
+            std::size_t col = i;
+            TM[row][col] = (p4k * TM[row+1][col-1] - TM[row][col-1]) / (p4k - 1.0);
+        }
+
+        if (std::abs(TM[0][n] - TM[0][n-1]) < eps) {
+            break;
+        }
+    }
+
+    return TM[0][n];
 }
 
 
